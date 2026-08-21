@@ -1,0 +1,15 @@
+[project]
+name = "pen-plotter"
+version = "0.1.0"
+description = "Environnement perso pour sketches de pen plotting."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy",
+    "shapely",
+    "vpype",
+    "vsketch",
+]
+
+[tool.uv]
+package = false
