@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.12'",
@@ -955,6 +955,7 @@ dependencies = [
     { name = "numpy", version = "2.5.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "shapely" },
     { name = "vpype" },
+    { name = "vpype-gcode" },
     { name = "vsketch" },
 ]
 
@@ -963,6 +964,7 @@ requires-dist = [
     { name = "numpy" },
     { name = "shapely" },
     { name = "vpype" },
+    { name = "vpype-gcode", specifier = ">=0.13.0" },
     { name = "vsketch" },
 ]
 
@@ -1254,7 +1256,7 @@ resolution-markers = [
     "python_full_version < '3.12'",
 ]
 dependencies = [
-    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" } },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/7a/97/5a3609c4f8d58b039179648e62dd220f89864f56f7357f5d4f45c29eb2cc/scipy-1.17.1.tar.gz", hash = "sha256:95d8e012d8cb8816c226aef832200b1d45109ed4464303e997c5b13122b297c0", size = 30573822, upload-time = "2026-02-23T00:26:24.851Z" }
 wheels = [
@@ -1328,7 +1330,7 @@ resolution-markers = [
     "python_full_version >= '3.12'",
 ]
 dependencies = [
-    { name = "numpy", version = "2.5.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "numpy", version = "2.5.2", source = { registry = "https://pypi.org/simple" } },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a7/25/c2700dfaf6442b4effaa91af24ebce5dc9d31bb4a69706313aae70d72cd0/scipy-1.18.0.tar.gz", hash = "sha256:67b2ad2ad54c72ca6d04975a9b2df8c3638c34ddd5b28738e94fc2b57929d378", size = 30774447, upload-time = "2026-06-19T15:01:43.456Z" }
 wheels = [
@@ -1595,6 +1597,21 @@ all = [
     { name = "moderngl" },
     { name = "pillow" },
     { name = "pyside6" },
+]
+
+[[package]]
+name = "vpype-gcode"
+version = "0.13.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click" },
+    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "numpy", version = "2.5.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "vpype" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ed/ea/7cdadba8b680145403ae849736a7e89c65da56a14439d03ead8fa457da1c/vpype-gcode-0.13.0.tar.gz", hash = "sha256:54f0f86eb30ece8a9172a35c5550bc06753eb8f8cac8a0c3d4d788fbc78654d6", size = 16958, upload-time = "2022-10-17T10:03:33.429Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d9/1d/c4bcac5a7303752d3586d8cf079c05b77dec78cf8fc81e7cc1c888cd925a/vpype_gcode-0.13.0-py3-none-any.whl", hash = "sha256:9a03bebe8f5ac7d824ea5e4f1582798cde3c7dd7e4c3b0576ad332905ace6187", size = 12263, upload-time = "2022-10-17T10:03:31.915Z" },
 ]
 
 [[package]]

@@ -8,6 +8,7 @@ dependencies = [
     "numpy",
     "shapely",
     "vpype",
+    "vpype-gcode>=0.13.0",
     "vsketch",
 ]
 

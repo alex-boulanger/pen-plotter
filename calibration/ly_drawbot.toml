@@ -1,0 +1,32 @@
+[gwrite]
+default_profile = "ly_drawbot"
+
+[gwrite.ly_drawbot]
+unit = "mm"
+vertical_flip = true
+
+document_start = """G21
+G17
+G90
+M3 S0
+G4 P0.2
+"""
+
+segment_first = """M3 S0
+G4 P0.2
+G1 X{x:.3f} Y{y:.3f} F3000
+M3 S1000
+G4 P0.1
+"""
+
+segment = "G1 X{x:.3f} Y{y:.3f} F1500\n"
+
+line_end = """M3 S0
+G4 P0.2
+"""
+
+document_end = """M3 S0
+G4 P0.2
+G1 X0 Y0 F3000
+M2
+"""

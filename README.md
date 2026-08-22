@@ -45,3 +45,23 @@ Depuis la racine du repo :
 ```bash
 uv run vsk run sketches/{name}
 ```
+
+## Générer le G-code pour le LY DrawBot
+
+Le profil du traceur se trouve dans `calibration/ly_drawbot.toml`. Pour convertir
+n'importe quel SVG A4 généré par `vsketch` :
+
+```bash
+make gcode SVG=chemin/vers/dessin.svg
+```
+
+`pagerotate -o landscape` ne fait rien si le SVG est déjà en paysage et tourne
+automatiquement un SVG portrait. Le fichier `.gcode` est créé à côté du SVG avec
+le même nom. Le profil `ly_drawbot` est configuré par défaut.
+
+Pour produire un fichier G-code séparé par layer, afin de changer de stylo entre
+les fichiers :
+
+```bash
+make gcode-layers SVG=chemin/vers/dessin.svg
+```
