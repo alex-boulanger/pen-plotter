@@ -1,0 +1,72 @@
+[
+  {
+    "slug": "cervin",
+    "name": "Cervin",
+    "lat": 45.97639,
+    "lon": 7.65861,
+    "alt_m": 4478
+  },
+  {
+    "slug": "mont-blanc",
+    "name": "Mont Blanc",
+    "lat": 45.83261,
+    "lon": 6.86475,
+    "alt_m": 4806
+  },
+  {
+    "slug": "meije",
+    "name": "La Meije",
+    "lat": 45.00472,
+    "lon": 6.30861,
+    "alt_m": 3983
+  },
+  {
+    "slug": "grandes-jorasses",
+    "name": "Grandes Jorasses",
+    "lat": 45.86889,
+    "lon": 6.98806,
+    "alt_m": 4208
+  },
+  {
+    "slug": "eiger",
+    "name": "Eiger",
+    "lat": 46.5775,
+    "lon": 8.00528,
+    "alt_m": 3967
+  },
+  {
+    "slug": "croix-de-belledonne",
+    "name": "Croix de Belledonne",
+    "lat": 45.16861,
+    "lon": 5.98833,
+    "alt_m": 2926
+  },
+  {
+    "slug": "chamechaude",
+    "name": "Chamechaude",
+    "lat": 45.28806,
+    "lon": 5.79,
+    "alt_m": 2082
+  },
+  {
+    "slug": "grand-veymont",
+    "name": "Grand Veymont",
+    "lat": 44.87,
+    "lon": 5.52694,
+    "alt_m": 2341
+  },
+  {
+    "slug": "kongmaru-la",
+    "name": "Kongmaru La",
+    "lat": 33.79039,
+    "lon": 77.61739,
+    "alt_m": 5260
+  },
+  {
+    "slug": "mont-ventoux",
+    "name": "Mont Ventoux",
+    "lat": 44.17397,
+    "lon": 5.27857,
+    "alt_m": 1909
+  }
+]
