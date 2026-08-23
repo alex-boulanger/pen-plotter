@@ -65,3 +65,21 @@ les fichiers :
 ```bash
 make gcode-layers SVG=chemin/vers/dessin.svg
 ```
+
+## Trouver le port série du LY DrawBot sur macOS
+
+Brancher le traceur, puis lister les ports série disponibles :
+
+```bash
+ls /dev/cu.*
+```
+
+Le port du LY DrawBot contient généralement `usbserial`, par exemple :
+
+```text
+/dev/cu.usbserial-21220
+```
+
+Utiliser le port `/dev/cu.*` dans UGS plutôt que son équivalent `/dev/tty.*`.
+Le suffixe (`21220` dans cet exemple) peut changer après une reconnexion ou un
+changement de prise USB : rafraîchir alors la liste des ports dans UGS.

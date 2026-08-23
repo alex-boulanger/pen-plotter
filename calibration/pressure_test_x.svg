@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="297mm"
+    height="210mm"
+    viewBox="0 0 297 210"
+>
+  <g
+      id="pressure-test-x"
+      fill="none"
+      stroke="#000000"
+      stroke-width="0.3"
+      stroke-linecap="round"
+  >
+    <path d="M 15,15  H 282" />
+    <path d="M 15,35  H 282" />
+    <path d="M 15,55  H 282" />
+    <path d="M 15,75  H 282" />
+    <path d="M 15,95  H 282" />
+    <path d="M 15,115 H 282" />
+    <path d="M 15,135 H 282" />
+    <path d="M 15,155 H 282" />
+    <path d="M 15,175 H 282" />
+    <path d="M 15,195 H 282" />
+
+    <path d="M 15,15      V 195" />
+    <path d="M 44.667,15  V 195" />
+    <path d="M 74.333,15  V 195" />
+    <path d="M 104,15     V 195" />
+    <path d="M 133.667,15 V 195" />
+    <path d="M 163.333,15 V 195" />
+    <path d="M 193,15     V 195" />
+    <path d="M 222.667,15 V 195" />
+    <path d="M 252.333,15 V 195" />
+    <path d="M 282,15     V 195" />
+  </g>
+</svg>

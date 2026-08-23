@@ -1,0 +1,58 @@
+import vsketch
+import vpype as vp
+
+
+class RibbonSketch(vsketch.SketchClass):
+    x_step_size = vsketch.Param(3, step=1)
+    y_step_size = vsketch.Param(2, 1, step=1)
+    y_margin = vsketch.Param(5.0, 0.0, 140.0, step=0.5, unit="mm")
+    line_count = vsketch.Param(200, step=1)
+    amplitude = vsketch.Param(200, step=10)
+
+    def draw(self, vsk: vsketch.Vsketch) -> None:
+        vsk.size("a4", landscape=False)
+
+        x_steps = self.line_count
+        drawing_height = vsk.height - 2 * self.y_margin
+        y_steps = max(2, int(drawing_height / self.y_step_size) + 1)
+
+        noise_x_frequency = 0.02
+        noise_y_frequency = 0.003
+        noise_amplitude = self.amplitude
+
+        for x_step in range(x_steps):
+            row_data = []
+            for y_step in range(y_steps):
+                y = vsk.map(
+                    y_step,
+                    0,
+                    y_steps - 1,
+                    self.y_margin,
+                    vsk.height - self.y_margin,
+                )
+                noise_value = vsk.noise(
+                    x_step * noise_x_frequency,
+                    y * noise_y_frequency,
+                )
+                x_offset = vsk.map(
+                    noise_value,
+                    0,
+                    1,
+                    -noise_amplitude,
+                    noise_amplitude,
+                )
+                x = x_step * self.x_step_size + x_offset
+
+                row_data.append((x, y))
+
+            vsk.polygon(row_data)
+
+    def finalize(self, vsk: vsketch.Vsketch) -> None:
+        vsk.vpype("linemerge linesimplify reloop linesort")
+
+        length_m = vsk.document.length() / vp.convert_length("1m")
+        print(f"Longueur tracée : {length_m:.2f} m")
+
+
+if __name__ == "__main__":
+    RibbonSketch.display()
