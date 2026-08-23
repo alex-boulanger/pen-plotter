@@ -1,5 +1,5 @@
 """
-Passages — one plotter print per mountain place.
+Reliefs — one plotter-printed relief portrait per remembered place.
 
 Each piece is a deterministic function of a real place: its topographic data
 fully governs the composition. Rendering the same place twice produces the
@@ -12,7 +12,7 @@ curvature — which drive a closed mark system.
 All pieces share this code and this grammar. Only the place changes: the
 constants below are the fixed grammar of the series, not per-piece controls.
 
-    vsk run sketches/passages             # viewer
+    vsk run sketches/reliefs              # viewer
     python render_series.py               # full SVG series
 
 The cache must be populated first (`python fetch_all.py`): this file never
@@ -50,22 +50,16 @@ SERIES_PARAMS = {
     # `hatch_min` is the full-black pitch: with a 0.3 mm pen and 0.03 cm pitch,
     # adjacent strokes touch and fill the surface.
     "hatch_min": 0.03,
-    "hatch_max": 0.40,
-    # Below this slope threshold, the facet stays empty. Ink concentrates where
-    # the terrain moves; the rest remains white.
-    "empty_threshold": 0.44,
+    "hatch_max": 0.60,
     "angle_steps": 8,
     # Explicit edges for the six marks, as fractions of the slope range above
     # the empty threshold. They form a fixed tonal scale.
     "level_edges": (0.06, 0.16, 0.31, 0.48),
-    # Blend between absolute thresholds and per-piece thresholds.
-    "exposure": 0.7,
     # A facet is split while its slope remains dispersed.
     "detail": 0.16,
     "min_facet": 0.6,
     "max_cuts": 9,
     "min_cuts": 2,
-    "cut_spread": 0.75,
     "samples": 12,
     # Only organic component: erode the outer contour, modulated by roughness.
     "erosion": 0.25,
@@ -92,17 +86,28 @@ def load_terrain(slug: str, res: int = WORK_RES) -> Terrain:
     return Terrain.load(slug, res=res)
 
 
-class PassagesSketch(vsketch.SketchClass):
+class ReliefsSketch(vsketch.SketchClass):
     place = vsketch.Param(PLACE_SLUGS[0], choices=PLACE_SLUGS)
 
-    # Exposed controls only: choose the place and show control layers. The
-    # series rendering remains fixed.
+    # The compositional controls stay global to the series: their defaults
+    # are also the values used by render_series.py.
+    empty_threshold = vsketch.Param(0.4, 0.0, 1.0, step=0.01, decimals=2)
+    exposure = vsketch.Param(0.9, 0.0, 1.0, step=0.05, decimals=2)
+    cut_spread = vsketch.Param(0.5, 0.0, 1.0, step=0.05, decimals=2)
+
+    # Viewer controls for choosing a place and showing control layers.
     debug = vsketch.Param(False)
     debug_field = vsketch.Param("slope", choices=["none", *debug_module_fields()])
 
     def params(self) -> dict:
         """Fixed grammar, in the shape expected by `marks.generate()`."""
-        return {**SERIES_PARAMS, "debug_field": str(self.debug_field)}
+        return {
+            **SERIES_PARAMS,
+            "empty_threshold": float(self.empty_threshold),
+            "exposure": float(self.exposure),
+            "cut_spread": float(self.cut_spread),
+            "debug_field": str(self.debug_field),
+        }
 
     def draw(self, vsk: vsketch.Vsketch) -> None:
         vsk.size("a4", landscape=False, center=False)
@@ -151,4 +156,4 @@ class PassagesSketch(vsketch.SketchClass):
 
 
 if __name__ == "__main__":
-    PassagesSketch.display()
+    ReliefsSketch.display()

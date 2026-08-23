@@ -2,7 +2,7 @@
 Render the full series from the local cache, without network access.
 
 No interaction, no per-place tuning: every place is rendered with the same
-fixed grammar from `PassagesSketch`. This is what makes the pieces read as a
+fixed grammar from `ReliefsSketch`. This is what makes the pieces read as a
 family.
 
     python render_series.py                 # toute la série
@@ -23,7 +23,7 @@ import vpype as vp
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from sketch_passages import PassagesSketch
+from sketch_reliefs import ReliefsSketch
 from terrain import CODE_VERSION, load_places
 
 OUTPUT_DIR = Path(__file__).resolve().parent / "output"
@@ -38,7 +38,7 @@ def pen_length_m(document: vp.Document) -> float:
     return document.length() / vp.convert_length("1m")
 
 
-def provenance(sketch: PassagesSketch, terrain) -> str:
+def provenance(sketch: ReliefsSketch, terrain) -> str:
     """XML provenance comment inserted at the top of each file."""
     params = sketch.params()
     settings = " ".join(
@@ -47,7 +47,7 @@ def provenance(sketch: PassagesSketch, terrain) -> str:
         if key not in ("width", "height")
     )
     return (
-        "\n  Passages — "
+        "\n  Reliefs — "
         f"{terrain.name}\n"
         f"  coordinates : {terrain.lat:.5f}, {terrain.lon:.5f}\n"
         f"  extent      : {terrain.extent_m:.0f} m, grid {terrain.res}\n"
@@ -64,7 +64,7 @@ def write_svg(path: Path, document: vp.Document, comment: str) -> None:
     vp.write_svg(
         buffer,
         document,
-        source_string=f"Passages v{CODE_VERSION}",
+        source_string=f"Reliefs v{CODE_VERSION}",
         color_mode="layer",
         set_date=False,
     )
@@ -78,16 +78,16 @@ def write_svg(path: Path, document: vp.Document, comment: str) -> None:
 
 def render(slug: str, output_dir: Path) -> tuple[Path, float]:
     # Force debug off so control layers never leak into a print export.
-    PassagesSketch.set_param_set({"place": slug, "debug": False})
-    sketch = PassagesSketch.execute(finalize=True)
+    ReliefsSketch.set_param_set({"place": slug, "debug": False})
+    sketch = ReliefsSketch.execute(finalize=True)
     if sketch is None:
         raise RuntimeError(f"sketch execution failed for '{slug}'")
 
-    from sketch_passages import load_terrain
+    from sketch_reliefs import load_terrain
 
     terrain = load_terrain(slug)
     document = sketch.vsk.document
-    path = output_dir / f"passages_{slug}_{terrain.seed}.svg"
+    path = output_dir / f"reliefs_{slug}_{terrain.seed}.svg"
     write_svg(path, document, provenance(sketch, terrain))
     return path, pen_length_m(document)
 

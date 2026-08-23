@@ -30,10 +30,10 @@ une lecture du massif.
 Vocabulaire fermé de six marques, couvertures pour une plume 0,3 mm :
 
     0  vide
-    1  hachures clairsemées      pas 0,40 cm     8 %
-    2  hachures denses           pas 0,20 cm    15 %
-    3  hachures serrées          pas 0,10 cm    30 %
-    4  aplat                     pas 0,05 cm    60 %
+    1  hachures clairsemées      pas 0,60 cm     5 %
+    2  hachures denses           pas 0,30 cm    10 %
+    3  hachures serrées          pas 0,15 cm    20 %
+    4  trame très dense          pas 0,075 cm   40 %
     5  noir plein                pas 0,03 cm   100 %
 
 C'est l'écart entre ces six valeurs qui fait le contraste, et le contraste qui
@@ -42,7 +42,7 @@ page qui n'utiliserait que le milieu de l'échelle resterait un gris uniforme,
 quelle que soit l'encre dépensée.
 
 Les deux extrémités méritent chacune leur justification. Sans le noir plein,
-le plus sombre plafonne à 60 % : encore un gris. Sans le clairsemé, il n'y a
+le plus sombre plafonne à 40 % : encore un gris. Sans le clairsemé, il n'y a
 plus de passage entre le vide et la matière, et la page redevient un damier.
 """
 
@@ -65,11 +65,10 @@ LEVEL_BLACK = 5
 
 INKED_LEVELS = (LEVEL_SPARSE, LEVEL_DENSE, LEVEL_TIGHT, LEVEL_FLAT, LEVEL_BLACK)
 
-# Part d'aire visée par chaque niveau, cumulée — 72 % de page vide, puis
-# 7 / 7 / 7 / 5 / 2 %. C'est la composition moyenne de la série, mesurée sur
-# les seuils absolus ; elle sert de cible à l'exposition relative, de sorte
-# que les deux extrêmes du réglage décrivent la même pièce moyenne.
-AREA_QUANTILES = (0.72, 0.79, 0.86, 0.93, 0.98)
+# Part de page vide visée par l'exposition relative. Seule la frontière entre
+# vide et matière est équilibrée entre les lieux : la distribution des cinq
+# densités reste propre à chaque relief.
+EMPTY_AREA_QUANTILE = 0.72
 
 LAYER_CONCAVE = 1
 LAYER_CONVEX = 2
@@ -89,9 +88,9 @@ def pitch_ladder(hatch_min: float, hatch_max: float) -> dict[int, float]:
     trame est globale, pas locale, et deux facettes voisines se fondent en une
     seule masse au lieu d'afficher leur couture.
 
-    Le dernier cran est un vrai aplat. Sous une plume 0,3 mm, un pas de
-    0,05 cm couvre 60 % de la surface : l'encre se rejoint et le trait
-    disparaît au profit d'une masse. C'est la bavure qui fait le noir.
+    L'avant-dernier cran reste une trame visible : sous une plume 0,3 mm, un
+    pas de 0,075 cm couvre 40 % de la surface. Le dernier cran est le vrai
+    aplat, où le pas rejoint la largeur de plume.
     """
     return {
         LEVEL_SPARSE: max(hatch_min, hatch_max),
@@ -110,58 +109,42 @@ def level_for_slope(slope: float, thresholds) -> int:
     return min(LEVEL_BLACK, sum(1 for edge in thresholds if slope >= edge))
 
 
-def absolute_thresholds(params: dict) -> list[float]:
-    """Les cinq seuils, en pente, tels que le réglage les fixe.
-
-    Ils sont donnés explicitement plutôt que par une courbe de réponse. Une
-    courbe en puissance ne peut pas faire le travail : la pente au-dessus du
-    seuil est très dissymétrique, et il faudrait un exposant de 1,8 en bas de
-    plage mais de 3,4 en haut pour obtenir une répartition utilisable. Un
-    exposant unique nourrit soit les marques claires soit les sombres, jamais
-    les deux — à gamma = 0,25, le niveau clairsemé ne recevait plus que 1 %
-    des facettes et le vocabulaire en annonçait six pour n'en utiliser que
-    quatre.
-    """
-    empty = params["empty_threshold"]
-    span = 1.0 - empty
-    return [empty] + [empty + edge * span for edge in params["level_edges"]]
-
-
-def relative_thresholds(slopes: np.ndarray, areas: np.ndarray) -> list[float]:
-    """Les mêmes seuils, mais lus dans la distribution propre à la pièce.
+def area_quantile(
+    values: np.ndarray, areas: np.ndarray, quantile: float, fallback: float
+) -> float:
+    """Un quantile pondéré par l'aire des facettes.
 
     On travaille en quantiles d'**aire** et non de facettes : ce qui doit être
     régulier d'une pièce à l'autre, c'est la part de page à chaque valeur, pas
     le nombre de facettes — une grande facette pèse dans le rendu ce que trois
     petites ne pèsent pas.
     """
-    if len(slopes) == 0 or areas.sum() <= 0.0:
-        return [0.0] * len(AREA_QUANTILES)
-    order = np.argsort(slopes)
-    sorted_slopes, sorted_areas = slopes[order], areas[order]
+    if len(values) == 0 or areas.sum() <= 0.0:
+        return fallback
+    order = np.argsort(values)
+    sorted_values, sorted_areas = values[order], areas[order]
     # Quantile au milieu de chaque facette, pour ne pas biaiser d'un demi-pas.
     cdf = (np.cumsum(sorted_areas) - 0.5 * sorted_areas) / sorted_areas.sum()
-    return [float(np.interp(q, cdf, sorted_slopes)) for q in AREA_QUANTILES]
+    return float(np.interp(quantile, cdf, sorted_values))
 
 
 def level_thresholds(
     slopes: np.ndarray, areas: np.ndarray, params: dict
 ) -> list[float]:
-    """Mélange seuils absolus et seuils propres à la pièce.
+    """Équilibre le vide sans uniformiser la signature tonale du lieu.
 
-    `exposure` = 0 laisse le poids de la pièce dire quelque chose du massif :
-    un versant régulier sort clair, un massif tourmenté sort chargé — dans un
-    rapport de un à deux sur les cinq premiers lieux. `exposure` = 1 expose
-    chaque pièce identiquement, et toute la variété passe alors dans la
-    composition. On mélange les *seuils*, pas les valeurs : les deux jeux sont
-    dans la même unité, donc l'interpolation garde un sens.
+    `exposure` = 0 emploie `empty_threshold` directement. `exposure` = 1 place
+    la frontière vide/encre au quantile d'aire visé pour que chaque œuvre ait
+    un poids global comparable. Les quatre seuils suivants restent des écarts
+    fixes au-dessus de cette frontière : leur distribution n'est donc pas
+    égalisée et continue d'exprimer la densité propre au relief.
     """
     blend = min(1.0, max(0.0, params.get("exposure", 0.0)))
-    fixed = absolute_thresholds(params)
-    if blend <= 0.0:
-        return fixed
-    own = relative_thresholds(slopes, areas)
-    return [(1.0 - blend) * a + blend * b for a, b in zip(fixed, own, strict=True)]
+    fixed_empty = params["empty_threshold"]
+    own_empty = area_quantile(slopes, areas, EMPTY_AREA_QUANTILE, fixed_empty)
+    empty = (1.0 - blend) * fixed_empty + blend * own_empty
+    span = 1.0 - empty
+    return [empty] + [empty + edge * span for edge in params["level_edges"]]
 
 
 def quantize_angle(aspect: float, steps: int) -> float:

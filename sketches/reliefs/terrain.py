@@ -1,5 +1,5 @@
 """
-Terrain acquisition, cache and derived fields for the "Passages" series.
+Terrain acquisition, cache and derived fields for the "Reliefs" series.
 
 This module knows nothing about drawing. It transforms a (lat, lon) pair into
 normalized scalar fields consumed by `marks.py`.

@@ -68,5 +68,26 @@
     "lat": 44.17397,
     "lon": 5.27857,
     "alt_m": 1909
+  },
+  {
+    "slug": "lacs-fourchu",
+    "name": "Lacs Fourchu (Taillefer)",
+    "lat": 45.05556,
+    "lon": 5.93,
+    "alt_m": 2051
+  },
+  {
+    "slug": "montmartre",
+    "name": "Montmartre",
+    "lat": 48.88611,
+    "lon": 2.34306,
+    "alt_m": 131
+  },
+  {
+    "slug": "lyon-centre",
+    "name": "Lyon (centre)",
+    "lat": 45.75761,
+    "lon": 4.83217,
+    "alt_m": 170
   }
 ]
