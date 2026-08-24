@@ -1,6 +1,6 @@
 VPYPE_CONFIG := calibration/ly_drawbot.toml
 
-.PHONY: gcode gcode-layers
+.PHONY: gcode gcode-layers length
 
 gcode:
 	@test -n "$(SVG)" || { echo "Usage: make gcode SVG=chemin/vers/dessin.svg"; exit 2; }
@@ -17,3 +17,7 @@ gcode-layers:
 		forlayer \
 			gwrite "$(basename $(SVG))_layer_%_lid%.gcode" \
 		end
+
+length:
+	@test -n "$(SVG)" || { echo "Usage: make length SVG=chemin/vers/dessin.svg"; exit 2; }
+	uv run python shared/measure.py "$(SVG)"

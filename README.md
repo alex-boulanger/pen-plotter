@@ -66,6 +66,17 @@ les fichiers :
 make gcode-layers SVG=chemin/vers/dessin.svg
 ```
 
+## Mesurer la longueur de tracé
+
+Pour afficher la longueur totale des traits d'un SVG, en mètres :
+
+```bash
+make length SVG=chemin/vers/dessin.svg
+```
+
+La colonne `Drawn` correspond au stylo posé. `Pen-up` est affiché à titre
+indicatif pour les déplacements sans dessin.
+
 ## Trouver le port série du LY DrawBot sur macOS
 
 Brancher le traceur, puis lister les ports série disponibles :
