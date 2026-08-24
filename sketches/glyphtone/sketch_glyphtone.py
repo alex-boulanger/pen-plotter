@@ -38,7 +38,7 @@ CMYK_LAYERS = (CYAN, MAGENTA, YELLOW, BLACK)
 
 class GlyphtoneSketch(vsketch.SketchClass):
     image = vsketch.Param(DEFAULT_IMAGE, choices=IMAGE_CHOICES)
-    image_fit = vsketch.Param("contain", choices=("contain", "cover"))
+    image_fit = vsketch.Param("cover", choices=("contain", "cover"))
     saturation = vsketch.Param(1.0, 0.0, 3.0, step=0.05)
     red_scale = vsketch.Param(1.0, 0.0, 2.0, step=0.05)
     green_scale = vsketch.Param(1.0, 0.0, 2.0, step=0.05)

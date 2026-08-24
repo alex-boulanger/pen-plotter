@@ -46,7 +46,7 @@ LAYER_PHASES = {
 
 class LinetoneSketch(vsketch.SketchClass):
     image = vsketch.Param(DEFAULT_IMAGE, choices=IMAGE_CHOICES)
-    image_fit = vsketch.Param("contain", choices=("contain", "cover"))
+    image_fit = vsketch.Param("cover", choices=("contain", "cover"))
     saturation = vsketch.Param(1.0, 0.0, 3.0, step=0.1)
     red_scale = vsketch.Param(1.0, 0.0, 2.0, step=0.1)
     green_scale = vsketch.Param(1.0, 0.0, 2.0, step=0.1)
@@ -116,10 +116,10 @@ class LinetoneSketch(vsketch.SketchClass):
             "color --layer 2 magenta "
             "color --layer 3 yellow "
             "color --layer 4 black "
-            "alpha --layer 1 0.6 "
-            "alpha --layer 2 0.6 "
-            "alpha --layer 3 0.6 "
-            "alpha --layer 4 0.6"
+            "alpha --layer 1 0.7 "
+            "alpha --layer 2 0.7 "
+            "alpha --layer 3 0.7 "
+            "alpha --layer 4 0.7"
         )
 
     def draw_scanline(
@@ -178,7 +178,7 @@ class LinetoneSketch(vsketch.SketchClass):
             vsk.polygon(x_values, y_values)
 
     def finalize(self, vsk: vsketch.Vsketch) -> None:
-        vsk.vpype("linesimplify linesort")
+        vsk.vpype("linemerge linesimplify reloop linesort")
 
 
 if __name__ == "__main__":
