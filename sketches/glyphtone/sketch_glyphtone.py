@@ -26,7 +26,7 @@ PAGE_WIDTH = 21.0
 PAGE_HEIGHT = 29.7
 IMAGE_CHOICES = image_names()
 DEFAULT_IMAGE = (
-    "grace_hopper.jpg" if "grace_hopper.jpg" in IMAGE_CHOICES else IMAGE_CHOICES[0]
+    "jungle.jpg" if "jungle.jpg" in IMAGE_CHOICES else IMAGE_CHOICES[0]
 )
 CYAN = 1
 MAGENTA = 2

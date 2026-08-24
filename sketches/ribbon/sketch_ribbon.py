@@ -1,13 +1,18 @@
-import vsketch
+import math
+
 import vpype as vp
+import vsketch
 
 
 class RibbonSketch(vsketch.SketchClass):
-    x_step_size = vsketch.Param(3, step=1)
+    x_step_size = vsketch.Param(2, step=1)
     y_step_size = vsketch.Param(2, 1, step=1)
     y_margin = vsketch.Param(5.0, 0.0, 140.0, step=0.5, unit="mm")
     line_count = vsketch.Param(200, step=1)
-    amplitude = vsketch.Param(200, step=10)
+    amplitude = vsketch.Param(100, step=10)
+    ribbon_width = vsketch.Param(60.0, 0.0, 150.0, step=5.0, unit="mm")
+    fold_count = vsketch.Param(6, 1, 20, step=1)
+    phase_span = vsketch.Param(3.0, 0.0, 12.0, step=0.5)
 
     def draw(self, vsk: vsketch.Vsketch) -> None:
         vsk.size("a4", landscape=False)
@@ -18,7 +23,6 @@ class RibbonSketch(vsketch.SketchClass):
 
         noise_x_frequency = 0.02
         noise_y_frequency = 0.003
-        noise_amplitude = self.amplitude
 
         for x_step in range(x_steps):
             row_data = []
@@ -38,10 +42,28 @@ class RibbonSketch(vsketch.SketchClass):
                     noise_value,
                     0,
                     1,
-                    -noise_amplitude,
-                    noise_amplitude,
+                    -self.amplitude,
+                    self.amplitude,
                 )
-                x = x_step * self.x_step_size + x_offset
+                osc = vsk.map(
+                    y_step,
+                    0,
+                    y_steps - 1,
+                    0,
+                    math.pi * self.fold_count,
+                )
+                phase = vsk.map(
+                    x_step,
+                    0,
+                    x_steps - 1,
+                    0,
+                    math.pi * self.phase_span,
+                )
+                x = (
+                    x_step * self.x_step_size
+                    + math.sin(osc + phase) * self.ribbon_width
+                    + x_offset
+                )
 
                 row_data.append((x, y))
 
