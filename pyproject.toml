@@ -7,6 +7,7 @@ requires-python = ">=3.11"
 dependencies = [
     "numpy",
     "pillow",
+    "pysometric",
     "requests>=2.34.2",
     "shapely",
     "vpype",
@@ -16,3 +17,6 @@ dependencies = [
 
 [tool.uv]
 package = false
+
+[tool.uv.sources]
+pysometric = { git = "https://github.com/svoisen/pysometric.git" }
