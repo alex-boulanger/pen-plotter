@@ -21,18 +21,18 @@
     <path d="M 0,210 H 8 M 0,210 V 202"/>
     <path d="M 297,210 H 289 M 297,210 V 202"/>
 
-    <!-- A5 landscape, centered: 210 x 148 mm. -->
-    <rect x="43.5" y="31" width="210" height="148"/>
-    <path d="M 43.5,31 H 49.5 M 43.5,31 V 37"/>
-    <path d="M 253.5,31 H 247.5 M 253.5,31 V 37"/>
-    <path d="M 43.5,179 H 49.5 M 43.5,179 V 173"/>
-    <path d="M 253.5,179 H 247.5 M 253.5,179 V 173"/>
+    <!-- A5 landscape, bottom-left aligned in machine coordinates: 210 x 148 mm. -->
+    <rect x="0" y="62" width="210" height="148"/>
+    <path d="M 0,62 H 6 M 0,62 V 68"/>
+    <path d="M 210,62 H 204 M 210,62 V 68"/>
+    <path d="M 0,210 H 6 M 0,210 V 204"/>
+    <path d="M 210,210 H 204 M 210,210 V 204"/>
 
-    <!-- A6 landscape, centered: 148 x 105 mm. -->
-    <rect x="74.5" y="52.5" width="148" height="105"/>
-    <path d="M 74.5,52.5 H 80.5 M 74.5,52.5 V 58.5"/>
-    <path d="M 222.5,52.5 H 216.5 M 222.5,52.5 V 58.5"/>
-    <path d="M 74.5,157.5 H 80.5 M 74.5,157.5 V 151.5"/>
-    <path d="M 222.5,157.5 H 216.5 M 222.5,157.5 V 151.5"/>
+    <!-- A6 landscape, bottom-left aligned in machine coordinates: 148 x 105 mm. -->
+    <rect x="0" y="105" width="148" height="105"/>
+    <path d="M 0,105 H 6 M 0,105 V 111"/>
+    <path d="M 148,105 H 142 M 148,105 V 111"/>
+    <path d="M 0,210 H 6 M 0,210 V 204"/>
+    <path d="M 148,210 H 142 M 148,210 V 204"/>
   </g>
 </svg>
