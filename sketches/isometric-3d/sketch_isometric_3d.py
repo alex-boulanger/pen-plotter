@@ -23,9 +23,10 @@ class Isometric3dSketch(vsketch.SketchClass):
     layer_displacement = vsketch.Param(2.0, step=0.2)
     grid_xy_rotation = vsketch.Param(5.0, step=0.2)
     layer_count= vsketch.Param(1, 1, 3, step=1)
+    is_solid= vsketch.Param(False)
 
     def draw(self, vsk: vsketch.Vsketch) -> None:
-        vsk.size("a4", landscape=False)
+        vsk.size("a5", landscape=False)
         vsk.scale("cm")
 
         frame = shapely_box(0, 0, vsk.width, vsk.height)
@@ -34,7 +35,6 @@ class Isometric3dSketch(vsketch.SketchClass):
         start_x = (vsk.width - grid_width) / 2
         start_y = (vsk.height - grid_height) / 2
 
-        solid = self.layer_count == 1
         for z in range(self.layer_count):
             layer = z + 1
             for y in range(self.rows):
@@ -44,7 +44,7 @@ class Isometric3dSketch(vsketch.SketchClass):
                     shape = Cube(
                         size=self.cube_size+(layer/20),
                         layer=layer,
-                        solid=solid,
+                        solid=self.is_solid,
                         rotations=[
                             Rotation(Axis.X, math.radians(self.rotate_x + ((x + y + (layer * self.layer_displacement)) *self.grid_xy_rotation))),
                             Rotation(Axis.Y, math.radians(self.rotate_y + ((x + y + (layer * self.layer_displacement)) *self.grid_xy_rotation))),
