@@ -10,10 +10,10 @@ quand une composition déçoit, est-ce le terrain qui est pauvre, la découpe qu
 tombe mal, ou le réglage qui écrase tout ? Les trois se corrigent à des
 endroits différents.
 
-    3  la découpe          — les facettes, et lesquelles restent vides
-    4  un champ du terrain — en demi-teinte, sous la pièce
-    5  le gradient         — direction et force de la pente
-    6  repères             — cadre, hypsométrie, valeurs clés
+    4  la découpe          — les facettes, et lesquelles restent vides
+    5  un champ du terrain — en demi-teinte, sous la pièce
+    6  le gradient         — direction et force de la pente
+    7  repères             — cadre, hypsométrie, valeurs clés
 
 Aucune de ces couches ne consomme le tirage aléatoire : les activer ne change
 donc jamais un trait de l'estampe.
@@ -28,10 +28,10 @@ from shapely.geometry import LineString, MultiLineString, Polygon
 
 import marks
 
-LAYER_PARTITION = 3
-LAYER_FIELD = 4
-LAYER_GRADIENT = 5
-LAYER_MARKERS = 6
+LAYER_PARTITION = 4
+LAYER_FIELD = 5
+LAYER_GRADIENT = 6
+LAYER_MARKERS = 7
 
 FIELDS = ["slope", "curvature", "roughness", "elevation"]
 

@@ -38,6 +38,12 @@ PAGE_W, PAGE_H = 21.0, 29.7  # A4 portrait, en cm
 PEN_WIDTH = "0.3mm"
 DEBUG_PEN_WIDTH = "0.1mm"
 
+# The identifying caption is plotted with its own pen pass, independently of
+# the two terrain inks. Debug layers start above it (see debug.py).
+LAYER_METADATA = 3
+METADATA_TEXT_SIZE = 0.32
+METADATA_OFFSET = 0.55
+
 PLACE_SLUGS = [s["slug"] for s in load_places()]
 
 # Fixed series grammar. These values define the common language of the pieces;
@@ -46,12 +52,12 @@ SERIES_PARAMS = {
     "width": PAGE_W,
     "height": PAGE_H,
     # All lengths are in centimeters, like the drawing coordinates.
-    "margin": 2.0,
+    "margin": 2.5,
     # `hatch_min` is the full-black pitch: with a 0.3 mm pen and 0.03 cm pitch,
     # adjacent strokes touch and fill the surface.
     "hatch_min": 0.03,
     "hatch_max": 0.60,
-    "angle_steps": 8,
+    "angle_steps": 4,
     # Explicit edges for the six marks, as fractions of the slope range above
     # the empty threshold. They form a fixed tonal scale.
     "level_edges": (0.06, 0.16, 0.31, 0.48),
@@ -74,6 +80,16 @@ SERIES_PARAMS = {
 
 def debug_module_fields() -> list[str]:
     return list(debug.FIELDS)
+
+
+def metadata_caption(terrain: Terrain) -> str:
+    """Human-readable identity carried by every print."""
+    lat_hemisphere = "N" if terrain.lat >= 0.0 else "S"
+    lon_hemisphere = "E" if terrain.lon >= 0.0 else "W"
+    return (
+        f"{terrain.name} | GPS {abs(terrain.lat):.5f} {lat_hemisphere}, "
+        f"{abs(terrain.lon):.5f} {lon_hemisphere} | altitude {terrain.alt_m:.0f} m"
+    )
 
 
 @cache
@@ -128,6 +144,17 @@ class ReliefsSketch(vsketch.SketchClass):
         for layer, geometry in marks.render(facets, params, rng):
             vsk.stroke(layer)
             vsk.geometry(geometry)
+
+        # Keep the identity separate from both terrain inks so it can be
+        # plotted, hidden or assigned a pen on its own.
+        vsk.penWidth(PEN_WIDTH, LAYER_METADATA)
+        vsk.stroke(LAYER_METADATA)
+        vsk.text(
+            metadata_caption(terrain),
+            params["margin"],
+            PAGE_H - params["margin"] + METADATA_OFFSET,
+            size=METADATA_TEXT_SIZE,
+        )
 
         if self.debug:
             self.draw_debug(vsk, terrain, facets, params)

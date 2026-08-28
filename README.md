@@ -1,96 +1,138 @@
 # Pen Plotter
 
-Environnement perso pour faire de pen plotting avec Python, `vsketch` et `vpype`
+Personal pen-plotting environment built with Python, `vsketch`, and `vpype`.
 
-## Structure
+## Project structure
 
 ```text
 .
-├── examples/   # exemples vsketch
-└── sketches/   # sketches perso
+├── examples/   # vsketch examples
+└── sketches/   # personal sketches
 ```
 
 ## Installation
 
-Ce repo utilise `uv`.
+This repository uses `uv`.
 
 ```bash
 uv sync
 ```
 
-Ajouter une dépendance :
+Add a dependency:
 
 ```bash
 uv add <package>
 ```
 
-Supprimer une dépendance :
+Remove a dependency:
 
 ```bash
 uv remove <package>
 ```
 
-## Créer un sketch
+## Create a sketch
 
-Depuis la racine du repo :
+From the repository root:
 
 ```bash
 uv run vsk init sketches/{name}
 ```
 
-## Lancer un sketch
+## Run a sketch
 
-Depuis la racine du repo :
+From the repository root:
 
 ```bash
 uv run vsk run sketches/{name}
 ```
 
-## Générer le G-code pour le LY DrawBot
+## Work with repository drawings
 
-Le profil du traceur se trouve dans `calibration/ly_drawbot.toml`. Pour convertir
-n'importe quel SVG A4 généré par `vsketch` :
-
-```bash
-make gcode SVG=chemin/vers/dessin.svg
-```
-
-`pagerotate -o landscape` ne fait rien si le SVG est déjà en paysage et tourne
-automatiquement un SVG portrait. Le fichier `.gcode` est créé à côté du SVG avec
-le même nom. Le profil `ly_drawbot` est configuré par défaut.
-
-Pour produire un fichier G-code séparé par layer, afin de changer de stylo entre
-les fichiers :
+Repository drawing paths are relative to `sketches/` and omit the `.svg`
+extension. For example, these commands operate on
+`sketches/fade/output/fade_liked_1.svg`:
 
 ```bash
-make gcode-layers SVG=chemin/vers/dessin.svg
+make preview fade/output/fade_liked_1
+make optimize fade/output/fade_liked_1
+make gcode fade/output/fade_liked_1
+make length fade/output/fade_liked_1
 ```
 
-## Mesurer la longueur de tracé
+`preview` and `gcode` display drawing statistics before continuing. `optimize`
+creates `sketches/fade/output/fade_liked_1-optimized.svg` and displays its
+statistics.
 
-Pour afficher la longueur totale des traits d'un SVG, en mètres :
+## Preview and optimize a Blender SVG
+
+Pass SVG names and paths as positional arguments without the `.svg` extension.
+
+Blender exports are read from `~/Documents/Blender/svg-output`. To open an SVG
+in the `vpype` viewer:
 
 ```bash
-make length SVG=chemin/vers/dessin.svg
+make blender-preview 0001
 ```
 
-La colonne `Drawn` correspond au stylo posé. `Pen-up` est affiché à titre
-indicatif pour les déplacements sans dessin.
+The terminal displays the drawn length, pen-up travel, path count, and segment
+count before opening the preview.
 
-## Trouver le port série du LY DrawBot sur macOS
+To prepare the SVG for plotting and G-code generation:
 
-Brancher le traceur, puis lister les ports série disponibles :
+```bash
+make blender-optimize 0001
+```
+
+This command merges contiguous paths, simplifies their geometry, moves the
+starting point of closed loops, and sorts paths to reduce pen-up travel. The
+source file remains unchanged. The result is saved alongside it as
+`0001-optimized.svg`, and the same statistics are displayed for the optimized
+file.
+
+To optimize a Blender export and convert it to G-code in one command:
+
+```bash
+make blender-gcode 0001
+```
+
+## Generate G-code for the LY DrawBot
+
+The plotter profile is located at `calibration/ly_drawbot.toml`. To convert an
+A4 SVG under `sketches/`, provide its path relative to that directory:
+
+```bash
+make gcode fade/output/fade_liked_1
+```
+
+`pagerotate -o landscape` leaves landscape SVGs unchanged and automatically
+rotates portrait SVGs. The `.gcode` file is created alongside the SVG with the
+same base name. The `ly_drawbot` profile is used by default.
+
+## Measure plotting length
+
+To display the total path length of an SVG in meters:
+
+```bash
+make length fade/output/fade_liked_1
+```
+
+The `Drawn` column represents travel with the pen down. `Pen-up` reports travel
+between paths without drawing.
+
+## Find the LY DrawBot serial port on macOS
+
+Connect the plotter, then list the available serial ports:
 
 ```bash
 ls /dev/cu.*
 ```
 
-Le port du LY DrawBot contient généralement `usbserial`, par exemple :
+The LY DrawBot port usually contains `usbserial`, for example:
 
 ```text
 /dev/cu.usbserial-21220
 ```
 
-Utiliser le port `/dev/cu.*` dans UGS plutôt que son équivalent `/dev/tty.*`.
-Le suffixe (`21220` dans cet exemple) peut changer après une reconnexion ou un
-changement de prise USB : rafraîchir alors la liste des ports dans UGS.
+Use the `/dev/cu.*` port in UGS instead of its `/dev/tty.*` counterpart. The
+suffix (`21220` in this example) may change after reconnecting the plotter or
+switching USB ports. If it does, refresh the port list in UGS.
