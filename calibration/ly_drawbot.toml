@@ -30,3 +30,40 @@ G4 P0.2
 G1 X0 Y0 F3000
 M2
 """
+
+[gwrite.ly_drawbot_reload]
+unit = "mm"
+vertical_flip = true
+
+document_start = """G21
+G17
+G90
+M3 S0
+G4 P0.2
+"""
+
+# Before every independent path: return to the ink at the machine origin,
+# lower the pen for one second, lift it, then travel to the path start.
+segment_first = """M3 S0
+G4 P0.2
+G1 X0 Y0 F3000
+M3 S1000
+G4 P1.0
+M3 S0
+G4 P0.2
+G1 X{x:.3f} Y{y:.3f} F3000
+M3 S1000
+G4 P0.1
+"""
+
+segment = "G1 X{x:.3f} Y{y:.3f} F1500\n"
+
+line_end = """M3 S0
+G4 P0.2
+"""
+
+document_end = """M3 S0
+G4 P0.2
+G1 X0 Y0 F3000
+M2
+"""

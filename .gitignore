@@ -5,5 +5,4 @@ __pycache__/
 *.py[cod]
 .python-version
 .ruff_cache/
-
-*.gcode
+config.mk

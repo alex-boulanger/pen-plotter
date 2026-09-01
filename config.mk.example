@@ -1,0 +1,12 @@
+# Copy this file to config.mk and adapt the paths to your workstation.
+# Command-line values still take precedence, for example:
+# make blender-gcode 0001 BLENDER_PAGE_MARGIN=15mm
+
+VPYPE_CONFIG := calibration/ly_drawbot.toml
+SKETCHES_DIR := sketches
+
+BLENDER_SVG_DIR := $(HOME)/Documents/Blender/svg-output
+BLENDER_GCODE_OUTPUT_DIR := $(HOME)/Documents/Blender/optimized-gcode
+BLENDER_PAGE_MARGIN := 10mm
+
+GCODE_OUTPUT_DIR := $(HOME)/Documents/Pen Plotter/optimized-gcode
