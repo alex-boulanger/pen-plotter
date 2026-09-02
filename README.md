@@ -173,6 +173,29 @@ G-code to a machine. Always inspect a preview, verify the work origin, and test
 at a low feed rate after changing calibration. Generated G-code must not be
 assumed safe for another plotter.
 
+### Parking the carriage
+
+With the work origin at the bottom-left of an A4 landscape page, the following
+commands raise the pen and park the carriage in the top-left corner:
+
+```gcode
+M3 S0
+G21
+G90
+G1 X0 Y240 F3000
+M2
+```
+
+Then reset to 0 0
+
+```gcode
+M3 S0
+G21
+G90
+G1 X0 Y0 F3000
+M2
+```
+
 ## Project structure
 
 ```text
