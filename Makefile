@@ -9,7 +9,7 @@ ifneq (,$(wildcard config.mk))
 include config.mk
 endif
 
-COMMANDS := render preview optimize gcode gcode-reload length \
+COMMANDS := render preview optimize gcode gcode-layers gcode-ink-reload length \
 	blender-preview blender-optimize blender-gcode
 COMMAND := $(firstword $(MAKECMDGOALS))
 
@@ -67,6 +67,16 @@ uv run vpype -c $(VPYPE_CONFIG) \
 	gwrite "$(2)/$(notdir $(1)).gcode"
 endef
 
+define GCODE_LAYERS
+mkdir -p "$(2)"
+uv run vpype -c $(VPYPE_CONFIG) \
+	read "$(1).svg" \
+	pagerotate -o landscape \
+	forlayer \
+		gwrite "$(2)/$(notdir $(1))-layer-%_lid%.gcode" \
+	end
+endef
+
 define GCODE_RELOAD
 mkdir -p "$(GCODE_OUTPUT_DIR)"
 uv run vpype -c $(VPYPE_CONFIG) \
@@ -83,7 +93,8 @@ help:
 	@echo "  make optimize PATH               Optimize sketches/PATH.svg"
 	@echo "  make length PATH                 Measure plotting distances"
 	@echo "  make gcode PATH                  Generate LY DrawBot G-code"
-	@echo "  make gcode-reload PATH           Generate G-code with ink reloads"
+	@echo "  make gcode-layers PATH           Generate one G-code file per layer"
+	@echo "  make gcode-ink-reload PATH           Generate G-code with ink reloads"
 	@echo "  make blender-preview NAME        Preview a Blender SVG export"
 	@echo "  make blender-optimize NAME       Fit and optimize it to A4 landscape"
 	@echo "  make blender-gcode NAME          Optimize and generate its G-code"
@@ -113,8 +124,13 @@ gcode:
 	$(call MEASURE,$(SKETCH))
 	$(call GCODE,$(SKETCH),$(GCODE_OUTPUT_DIR))
 
-gcode-reload:
-	@test -n "$(DRAWING)" || { echo "Usage: make gcode-reload path/to/drawing"; exit 2; }
+gcode-layers:
+	@test -n "$(DRAWING)" || { echo "Usage: make gcode-layers path/to/drawing"; exit 2; }
+	$(call MEASURE,$(SKETCH))
+	$(call GCODE_LAYERS,$(SKETCH),$(GCODE_OUTPUT_DIR))
+
+gcode-ink-reload:
+	@test -n "$(DRAWING)" || { echo "Usage: make gcode-ink-reload path/to/drawing"; exit 2; }
 	$(call MEASURE,$(SKETCH))
 	$(call GCODE_RELOAD,$(SKETCH))
 

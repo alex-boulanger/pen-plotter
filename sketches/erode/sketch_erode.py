@@ -7,7 +7,7 @@ PAGE_HEIGHT = 29.7
 
 
 class ErodeSketch(vsketch.SketchClass):
-    margin = vsketch.Param(2, 0.5, 5.0, step=0.1)
+    margin = vsketch.Param(2.0, 0.5, 5.0, step=0.1)
     grid_spacing = vsketch.Param(0.5, 0.1, 5.0, step=0.1)
     line_spacing = vsketch.Param(0.5, 0.1, 5.0, step=0.1)
     grid_count = vsketch.Param(5, 1, 10, step=1)

@@ -13,22 +13,13 @@ class RibbonSketch(vsketch.SketchClass):
     ribbon_width = vsketch.Param(60.0, 0.0, 150.0, step=5.0, unit="mm")
     fold_count = vsketch.Param(1, 1, 20, step=0.5)
     phase_span = vsketch.Param(1.5, 0.0, 12.0, step=0.5)
-
-    red_size = vsketch.Param(90.0, 35.0, 140.0, step=5.0, unit="mm")
-    red_outline_count = vsketch.Param(14, 1, 30, step=1)
-    red_outline_spacing = vsketch.Param(
-        2.2, 0.5, 6.0, step=0.1, unit="mm"
-    )
-    red_max_rotation = vsketch.Param(20.0, 0.0, 45.0, step=1.0)
+    phase_variation = vsketch.Param(0.35, 0.0, 1.0, step=0.05)
+    width_variation = vsketch.Param(0.25, 0.0, 0.6, step=0.05)
 
     def draw(self, vsk: vsketch.Vsketch) -> None:
-        # Layout is explicit because centering the combined layers can push a
-        # wide composition beyond the page once the red square is added.
+        # Layout is explicit because the noise-driven width is unknown until
+        # every line has been generated.
         vsk.size("a4", landscape=False, center=False)
-
-        # Create the red geometry first so the black ribbon is visually on top
-        # at crossings, while retaining red as plotter layer 2.
-        self.draw_red_square(vsk)
 
         vsk.stroke(1)
         x_steps = self.line_count
@@ -41,6 +32,7 @@ class RibbonSketch(vsketch.SketchClass):
         for x_step in range(x_steps):
             row_data = []
             for y_step in range(y_steps):
+                y_progress = y_step / (y_steps - 1)
                 y = vsk.map(
                     y_step,
                     0,
@@ -66,16 +58,39 @@ class RibbonSketch(vsketch.SketchClass):
                     0,
                     math.pi * self.fold_count,
                 )
-                phase = vsk.map(
+                base_phase = vsk.map(
                     x_step,
                     0,
                     x_steps - 1,
                     0,
                     math.pi * self.phase_span,
                 )
+                # Slowly open and close the phase fan. The two harmonics avoid
+                # a mechanically repeating rhythm while remaining continuous
+                # across every neighbouring line.
+                phase_breath = (
+                    0.65
+                    * math.sin(2 * math.pi * 1.15 * y_progress + 0.4)
+                    + 0.35
+                    * math.sin(2 * math.pi * 2.35 * y_progress + 1.7)
+                )
+                phase = base_phase * (
+                    1 + self.phase_variation * phase_breath
+                )
+                # Breathe at a different rhythm from the phase fan so both
+                # variations do not repeatedly peak at the same heights.
+                width_breath = (
+                    0.7
+                    * math.sin(2 * math.pi * 0.7 * y_progress + 2.1)
+                    + 0.3
+                    * math.sin(2 * math.pi * 1.85 * y_progress + 0.8)
+                )
+                width_scale = 1 + self.width_variation * width_breath
                 x = (
                     x_step * self.x_step_size
-                    + math.sin(osc + phase) * self.ribbon_width
+                    + math.sin(osc + phase)
+                    * self.ribbon_width
+                    * width_scale
                     + x_offset
                 )
 
@@ -88,55 +103,6 @@ class RibbonSketch(vsketch.SketchClass):
         if ribbon_bounds is not None:
             ribbon_center_x = (ribbon_bounds[0] + ribbon_bounds[2]) / 2
             ribbon.translate(vsk.width / 2 - ribbon_center_x, 0)
-
-    def draw_red_square(self, vsk: vsketch.Vsketch) -> None:
-        """Draw a deterministic stack of empty, concentric red squares."""
-        angle = math.radians(
-            vsk.random(-self.red_max_rotation, self.red_max_rotation)
-        )
-
-        # Account for rotation while placing the square behind the ribbon in
-        # the lower-middle portion of the composition.
-        half_size = self.red_size / 2
-        extent = half_size * (abs(math.cos(angle)) + abs(math.sin(angle)))
-        margin = vp.convert_length("5mm")
-
-        safe_x_min = extent + margin
-        safe_x_max = vsk.width - extent - margin
-        center_x_min = max(safe_x_min, vsk.width * 0.62)
-        center_x_max = min(safe_x_max, vsk.width * 0.82)
-        center_x = vsk.random(center_x_min, center_x_max)
-
-        safe_y_min = extent + margin
-        safe_y_max = vsk.height - extent - margin
-        center_y_min = max(safe_y_min, vsk.height * 0.62)
-        center_y_max = min(safe_y_max, vsk.height * 0.74)
-        center_y = vsk.random(center_y_min, center_y_max)
-
-        vsk.stroke(2)
-        cos_angle = math.cos(angle)
-        sin_angle = math.sin(angle)
-
-        for index in range(int(self.red_outline_count)):
-            size = self.red_size - 2 * index * self.red_outline_spacing
-            if size <= 0:
-                break
-
-            half = size / 2
-            corners = []
-            for x, y in (
-                (-half, -half),
-                (half, -half),
-                (half, half),
-                (-half, half),
-            ):
-                corners.append(
-                    (
-                        center_x + x * cos_angle - y * sin_angle,
-                        center_y + x * sin_angle + y * cos_angle,
-                    )
-                )
-            vsk.polygon(corners, close=True)
 
     def finalize(self, vsk: vsketch.Vsketch) -> None:
         vsk.vpype(

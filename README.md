@@ -108,21 +108,23 @@ make preview erode/output/erode
 make optimize fade/output/fade_liked_1
 make length fade/output/fade_liked_1
 make gcode fade/output/fade_liked_1
-make gcode-reload erode/output/erode
+make gcode-layers linetone/output/linetone_liked_1
+make gcode-ink-reload erode/output/erode
 make test
 ```
 
-| Command | Purpose |
-|---|---|
-| `render` | render a vsketch project to SVG |
-| `preview` | display an SVG and its plotting statistics |
-| `optimize` | merge, simplify, reloop, and sort paths |
-| `length` | report pen-down and pen-up travel |
-| `gcode` | generate standard LY DrawBot G-code |
-| `gcode-reload` | reload ink at `(0, 0)` before every path |
-| `test` | run the automated test suite |
+| Command            | Purpose                                           |
+| ------------------ | ------------------------------------------------- |
+| `render`           | render a vsketch project to SVG                   |
+| `preview`          | display an SVG and its plotting statistics        |
+| `optimize`         | merge, simplify, reloop, and sort paths           |
+| `length`           | report pen-down and pen-up travel                 |
+| `gcode`            | generate standard LY DrawBot G-code               |
+| `gcode-layers`     | generate one LY DrawBot G-code file per SVG layer |
+| `gcode-ink-reload` | reload ink at `(0, 0)` before every path          |
+| `test`             | run the automated test suite                      |
 
-`gcode-reload` preserves path creation order. Do not run `optimize` first when
+`gcode-ink-reload` preserves path creation order. Do not run `optimize` first when
 the order of ink reloads is part of the drawing.
 
 ## Blender workflow
