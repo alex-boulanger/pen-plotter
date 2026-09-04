@@ -176,6 +176,27 @@ make blender-gcode 0021 BLENDER_PAGE_MARGIN=15mm
 Regular sketch G-code is written by default to
 `~/Documents/Pen Plotter/optimized-gcode`.
 
+## Project structure
+
+```text
+.
+├── calibration/       # LY DrawBot profiles and calibration drawings
+├── docs/              # hardware notes and gallery assets
+├── shared/            # reusable geometry and image utilities
+├── sketches/          # original generative-art projects
+├── tests/             # deterministic geometry and rendering tests
+├── config.mk.example  # local path configuration template
+├── Makefile           # rendering, inspection, optimization, and G-code tasks
+├── pyproject.toml      # Python project metadata and dependencies
+└── uv.lock             # reproducible dependency lock
+```
+
+Create a new vsketch project with:
+
+```bash
+uv run vsk init sketches/my-sketch
+```
+
 ## Hardware and safety
 
 The profiles in [`calibration/ly_drawbot.toml`](calibration/ly_drawbot.toml)
@@ -211,37 +232,35 @@ G1 X0 Y0 F3000
 M2
 ```
 
-## Project structure
+When opening if UGS zeroed values with arm on Y240
 
-```text
-.
-├── calibration/       # LY DrawBot profiles and calibration drawings
-├── docs/              # hardware notes and gallery assets
-├── shared/            # reusable geometry and image utilities
-├── sketches/          # original generative-art projects
-├── tests/             # deterministic geometry and rendering tests
-├── config.mk.example  # local path configuration template
-├── Makefile           # rendering, inspection, optimization, and G-code tasks
-├── pyproject.toml      # Python project metadata and dependencies
-└── uv.lock             # reproducible dependency lock
+```gcode
+M3 S0
+G21
+G90
+G1 X0 Y-240 F3000
+M2
 ```
 
-Create a new vsketch project with:
+### Move the pen
+
+pen up:
+
+```gcode
+M3 S0
+```
+
+pen down:
+
+```gcode
+M3 S1000
+```
+
+### find the plotter's port
 
 ```bash
-uv run vsk init sketches/my-sketch
+ls /dev/cu.*
 ```
-
-## Tests
-
-Run the complete suite with:
-
-```bash
-make test
-```
-
-The current tests verify deterministic composition planning, geometric
-validity, page bounds, treatment constraints, and plotter pen-layer mapping.
 
 ## License
 
