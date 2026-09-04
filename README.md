@@ -1,6 +1,9 @@
 # Pen Plotter
 
-![Temporary placeholder for a photograph of the plotter and finished work](docs/images/hero-placeholder.svg)
+![The Joy Of Plotting](docs/images/the_joy_of_plotting.jpg)
+
+_The Joy of Plotting — a four-colour scanline portrait generated with
+[`linetone`](sketches/linetone/)._
 
 A generative pen-plotting laboratory exploring how algorithms, geometry, ink,
 and physical constraints interact. Python sketches and Blender line art are
@@ -11,33 +14,45 @@ toolchain used to take them from code to paper.
 
 ## Selected work
 
-### Erode
+### Abstract aquarelles
 
-![Temporary placeholder for an Erode scan](docs/images/erode-placeholder.svg)
+Overlapping fields of parallel colour lines, where transparent layers create
+new tones directly on paper. Generated with
+[`abstract_aquarelle`](sketches/abstract_aquarelle/).
 
-A grid of squares, each filled from top to bottom by one continuous serpentine
-line. The plotter reloads at its ink reservoir before every square, then the
-physical depletion of ink becomes part of the image. See
-[`sketches/erode`](sketches/erode).
+![Aquarelle 1](docs/images/abstract_aquarelle_01.jpg)
+![Aquarelle 2](docs/images/abstract_aquarelle_02.jpg)
 
-### Reliefs
+### Fading squares
 
-![Temporary placeholder for a Reliefs scan](docs/images/reliefs-placeholder.svg)
+A study of ink depletion: every cell starts freshly loaded, then records the
+gradual loss of pigment along one continuous serpentine path. Generated with
+[`erode`](sketches/erode/).
 
-A deterministic series based on real terrain tiles. Slope, aspect, curvature,
-and roughness drive a vocabulary of facets and plotted marks without producing
-a literal topographic map. Read the full
-[project notes](sketches/reliefs/README.md).
+![Silver fading squares on black paper](docs/images/fading_squares_01.jpg)
+![Silver fading squares on blue paper](docs/images/fading_squares_02.jpg)
 
-### Studies Monument
+### Isometric fog
 
-Deterministic isometric compositions built from a constrained grammar of
-volumes and mark treatments. The planner and rendered geometry are covered by
-the repository's automated tests. See
-[`sketches/studies_monument`](sketches/studies_monument).
+Two superimposed line fields turn a simple volume into a translucent,
+fog-filled structure. Generated with
+[`isometric-3d`](sketches/isometric-3d/).
 
-> The images above are temporary placeholders. Scans and photographs of the
-> physical plots will replace them.
+![Blue and coral isometric fog](docs/images/isometric_fog.jpg)
+
+### Ribbon
+
+A continuous family of curves folds into a soft, shifting volume; density and
+overlap provide the shading. Generated with [`ribbon`](sketches/ribbon/).
+
+![Black plotted ribbon](docs/images/ribbon_01.jpg)
+
+### Blender squares
+
+An isometric field of cubes produced through the repository's
+[Blender-to-plotter workflow](#blender-workflow).
+
+![Isometric cube study exported from Blender](docs/images/blender_squares.jpg)
 
 ## Pipeline
 
